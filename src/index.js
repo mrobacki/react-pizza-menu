@@ -68,37 +68,82 @@ function Header() {
 }
 
 function Menu() {
+  const pizzas = pizzaData;
+  const numPizzas = pizzas.length;
   return (
     <main className="menu">
       <h2>Our menu</h2>
-      {pizzaData.map((pizza) => (
-        <Pizza pizzaObj={pizza} key={pizza.name} />
-      ))}
+
+      {numPizzas > 0 ? (
+        <>
+          <p>
+            This is a simple React app that showcases a basic pizza menu with
+            conditional rendering and component composition.
+          </p>
+          <ul className="pizzas">
+            {pizzas.map((pizza) => (
+              <Pizza pizzaObj={pizza} key={pizza.name} />
+            ))}
+          </ul>
+        </>
+      ) : (
+        <p>We're still working on our menu. Please come back later :)</p>
+      )}
     </main>
+  );
+}
+
+function Pizza({ pizzaObj }) {
+  const pizzaSoldOut = pizzaObj.soldOut;
+  // if (pizzaObj.soldOut) return null;
+
+  return (
+    <li className={`pizza ${pizzaSoldOut ? "sold-out" : ""}`}>
+      <img src={pizzaObj.photoName} alt={pizzaObj.name} />
+      <div>
+        <h3>{pizzaObj.name}</h3>
+        <p>{pizzaObj.ingredients}</p>
+        <span>{pizzaSoldOut ? "Sold out" : pizzaObj.price.toFixed(2)}</span>
+      </div>
+    </li>
   );
 }
 
 function Footer() {
   const hour = new Date().getHours();
-  const openHour = 12;
+  const openHour = 10;
   const closeHour = 22;
   const isOpen = hour >= openHour && hour <= closeHour;
 
   return (
     <footer className="footer">
-      {new Date().toLocaleTimeString()}. We're currently open!
+      {isOpen ? (
+        <Order closeHour={closeHour} openHour={openHour} />
+      ) : (
+        <p>
+          We're happy to welcome you between {openHour}:00 and {closeHour}:00
+        </p>
+      )}
     </footer>
   );
 }
 
-function Pizza({ pizzaObj }) {
+function Order({ closeHour, openHour }) {
   return (
-    <div>
-      <img src={pizzaObj.photoName} alt={pizzaObj.name} />
-      <h3>{pizzaObj.name}</h3>
-      <p>{pizzaObj.ingredients}</p>
+    <div className="order">
+      <p>
+        We're open from {openHour}:00 to {closeHour}:00. Come visit us or order
+        online.
+      </p>
+      <button className="btn" onClick={handleOrderClick}>
+        Order
+      </button>
     </div>
   );
+}
+
+function handleOrderClick() {
+  alert("It's just an example 😉");
 }
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
